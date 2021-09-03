@@ -1,21 +1,12 @@
 // you can add baseUrl: src to ts.cofig and you can then do imports
 // this way (import {GRID} from 'typings')
 import { GRID, NUMBERS } from '../../typings'
+import { checkGrid } from '../check-grid'
 import { isInCol } from '../col'
+import { identifyWorkingSquare } from '../identify-square'
 import { isInRow } from '../row'
 import { shuffle } from '../shuffle'
-
-const gridExample: GRID = [
-  [0, 0, 0, 0, 0, 0, 0, 0, 0],
-  [0, 0, 0, 0, 0, 0, 0, 0, 0],
-  [0, 0, 0, 0, 0, 0, 0, 0, 0],
-  [0, 0, 0, 0, 0, 0, 0, 0, 0],
-  [0, 0, 0, 0, 0, 0, 0, 0, 0],
-  [0, 0, 0, 0, 0, 0, 0, 0, 0],
-  [0, 0, 0, 0, 0, 0, 0, 0, 0],
-  [0, 0, 0, 0, 0, 0, 0, 0, 0],
-  [0, 0, 0, 0, 0, 0, 0, 0, 0],
-]
+import { isInSquare } from '../square'
 
 const numbers: NUMBERS[] = [1, 2, 3, 4, 5, 6, 7, 8, 9]
 
@@ -24,7 +15,11 @@ const numbers: NUMBERS[] = [1, 2, 3, 4, 5, 6, 7, 8, 9]
  * in a 9x9 sudoku grid
  * @param grid : ;
  */
-export const fillGrid = (grid: GRID) => {
+/**
+ * A backtracking/recursive function to check all the possible combinations of numbers a solution is found
+ * @param grid  9X9 Sudoku Grid
+ */
+export function fillGrid(grid: GRID) {
   let row = 0
   let col = 0
 
@@ -36,20 +31,20 @@ export const fillGrid = (grid: GRID) => {
       shuffle(numbers)
 
       for (let value of numbers) {
-        //is it not in the grid row?
-        if (!isInRow({ grid, row, value })) {
-          // is it not in the grid col?
-          if (!isInCol({ grid, col, value })) {
-            // is it not in grid block
-            // .. if this is the case
-            grid[row][col] = value
+        if (!isInRow({ grid, row, value }))
+          if (!isInCol({ col, grid, value })) {
+            const square = identifyWorkingSquare({ col, grid, row })
+            if (!isInSquare({ square, value })) {
+              grid[row][col] = value
+              if (checkGrid(grid)) return true
+              else if (fillGrid(grid)) return true
+            }
           }
-        }
       }
 
       break
     }
-
-    grid[row][col] = 0
   }
+
+  grid[row][col] = 0
 }
