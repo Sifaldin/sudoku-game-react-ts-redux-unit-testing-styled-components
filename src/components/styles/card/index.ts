@@ -9,5 +9,7 @@ export const Card = styled.div`
     flex-direction: column;
     max-height: 500px;
     padding: 15px;
+    padding-bottom: 40px;
+    
   `}
 `

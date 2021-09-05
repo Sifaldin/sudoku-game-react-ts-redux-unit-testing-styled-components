@@ -2,10 +2,11 @@ import styled, { css } from 'styled-components'
 
 interface IProps {
   active?: boolean
+  isPuzzle: boolean
 }
 
 export const BlockWrapper = styled.div<IProps>`
-  ${({ theme, active }) => css`
+  ${({ theme, active, isPuzzle }) => css`
     align-items: center;
     background-color: ${active ? theme.colors.blue : theme.colors.white};
     border: solid 1px ${theme.colors.black};
@@ -14,7 +15,7 @@ export const BlockWrapper = styled.div<IProps>`
     flex-grow: 1;
     flex-shrink: 0;
     flex-basis: 0;
-    font-weight: bold;
+    font-weight: ${isPuzzle ? 'normal' : 'bold'};
     font-size: 20px;
     justify-content: center;
     transition: ${theme.transition};
